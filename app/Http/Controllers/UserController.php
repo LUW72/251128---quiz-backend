@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,8 +12,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return User::all();
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -25,9 +27,10 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
+
     public function show(string $id)
     {
-        //
+        return User::find($id);
     }
 
     /**
@@ -45,4 +48,29 @@ class UserController extends Controller
     {
         //
     }
+
+    public function savePoints(Request $request)
+    {
+        $name = $request->name;
+        $points = $request->points;
+
+        $user = User::where('name', $name)->first();
+
+
+        $user->points = $points;
+        $user->save();
+
+        return response()->json($user, 200);
+    }
+
+
+    public function topList()
+    {
+        $top = User::orderBy('points', 'desc')
+                ->limit(10)
+                ->get(['name', 'points']);
+
+        return response()->json($top);
+    }
+
 }

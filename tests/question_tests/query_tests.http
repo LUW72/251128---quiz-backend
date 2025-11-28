@@ -3,3 +3,6 @@ GET http://127.0.0.1:8000/api/difficulties/easy HTTP/1.1
 ###
 GET http://127.0.0.1:8000/api/difficultiesWithAnswers/easy HTTP/1.1 
 ###
+
+GET http://127.0.0.1:8000/api/toplist HTTP/1.1 
+###
