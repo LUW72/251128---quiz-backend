@@ -1,0 +1,40 @@
+GET http://127.0.0.1:8000/api/questions/11
+###
+
+GET http://127.0.0.1:8000/api/questions/
+###
+
+POST http://127.0.0.1:8000/api/questions/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "question_text": "Mi a fővárosa Magyarországnak?",
+  "difficulty": "easy",
+  "answers": [
+    {"answer_text": "Budapest", "right_answer": true},
+    {"answer_text": "Debrecen", "right_answer": false},
+    {"answer_text": "Szeged", "right_answer": false},
+    {"answer_text": "Pécs", "right_answer": false}
+  ]
+
+}
+###
+
+DELETE http://127.0.0.1:8000/api/questions/11
+###
+
+PUT http://127.0.0.1:8000/api/questions/10 HTTP/1.1
+Content-Type: application/json
+
+{
+  "question_text": "Mi a fővárosa Ausztriának?",
+  "difficulty": "easy",
+  "answers": [
+    {"answer_text": "Bécs", "right_answer": true},
+    {"answer_text": "Zágráb", "right_answer": false},
+    {"answer_text": "Kassa", "right_answer": false},
+    {"answer_text": "Bukarest", "right_answer": false}
+  ]
+
+}
+###

@@ -66,7 +66,7 @@ class QuestionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return Question::find($id);
     }
 
     /**
@@ -74,7 +74,37 @@ class QuestionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'question_text' => 'required|string',
+            'difficulty' => 'required|in:easy,medium,hard',
+            'answers' => 'required|array|min:2|max:4',
+            'answers.*.answer_text' => 'required|string',
+            'answers.*.right_answer' => 'required|boolean',
+        ]);
+
+        // Ellenőrizzük, hogy pontosan egy helyes válasz legyen
+        $correctCount = collect($validated['answers'])->where('right_answer', true)->count();
+        if ($correctCount !== 1) {
+            return response()->json([
+                'message' => 'Pontosan egy helyes választ kell megjelölni!'
+            ], 422);
+        }        
+
+        $question = Question::find($id);
+        $question->fill($request->all());
+        $question->save();
+
+        foreach ($validated['answers'] as $answerData) {
+            $question->answers()->create($answerData);
+        }        
+
+        $questionWithAnswers = Question::with('answers')->find($question->id);
+
+        return response()->json([
+            'message' => 'Kérdés és válaszok sikeresen módosítva.',
+            'question' => $questionWithAnswers
+        ], 200);        
+
     }
 
     /**
@@ -82,6 +112,22 @@ class QuestionController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $question = Question::find($id);
+        $question->delete();
+        return response()->json(null, 200);
     }
+
+    public function difficulties($difficulty)
+    {
+        $questions = Question::where("difficulty", $difficulty)->get();
+        return $questions;
+    }
+
+    public function difficultiesWithAnswers($difficulty)
+    {
+        $questions = Question::with("answers")
+        ->where("difficulty", $difficulty)
+        ->get();
+        return $questions;
+    }    
 }
